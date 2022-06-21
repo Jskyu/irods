@@ -350,18 +350,20 @@ def setup_server_config(irods_config):
         if irods.lib.default_prompt(confirmation_message, default=['yes']) in ['', 'y', 'Y', 'yes', 'YES']:
             break
 
-    irods_config.server_config['zone_key'] = irods.lib.prompt(
+    irods_config.server_config['zone_key'] = irods.lib.default_prompt(
         'iRODS server\'s zone key',
+        default=['TEMPORARY_zone_key'],
         input_filter=irods.lib.character_count_filter(minimum=1, field='Zone key'),
         echo=False)
 
-    irods_config.server_config['negotiation_key'] = irods.lib.prompt(
+    irods_config.server_config['negotiation_key'] = irods.lib.default_prompt(
         'iRODS server\'s negotiation key (32 characters)',
+        default=['TEMPORARY_32byte_negotiation_key'],
         input_filter=irods.lib.character_count_filter(minimum=32, maximum=32, field='Negotiation key'),
         echo=False)
-
-    irods_config.server_config['server_control_plane_key'] = irods.lib.prompt(
+    irods_config.server_config['server_control_plane_key'] = irods.lib.default_prompt(
         'Control Plane key (32 characters)',
+        default=['TEMPORARY__32byte_ctrl_plane_key'],
         input_filter=irods.lib.character_count_filter(minimum=32, maximum=32, field='Control Plane key'),
         echo=False)
 

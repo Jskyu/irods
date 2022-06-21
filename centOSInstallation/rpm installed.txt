@@ -1,0 +1,78 @@
+yum install -y git
+yum install -y \
+https://repo.ius.io/ius-release-el7.rpm \
+https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+yum swap -y git git224-core
+
+yum -y update ca-certificates
+yum install -y sudo bind-utils wget
+yum -y install gcc g++ libstdc++-static make rpm-build bzip2-devel curl-devel fakeroot help2man openssl-devel pam-devel python-devel unixODBC unixODBC-devel zlib-devel
+
+dig +short myip.opendns.com @resolver1.opendns.com
+
+sudo rpm --import https://unstable.irods.org/irods-unstable-signing-key.asc
+wget -qO - https://unstable.irods.org/renci-irods-unstable.yum.repo | sudo tee /etc/yum.repos.d/renci-irods-unstable.yum.repo
+sudo yum -y update
+sudo yum -y install irods-externals-*
+
+git clone -b 4.2.11 --single-branch https://github.com/irods/irods.git
+cd irods
+git submodule update --init
+
+export PATH=/opt/irods-externals/cmake3.11.4-0/bin:$PATH
+mkdir build
+cd build
+cmake -DIRODS_DISABLE_COMPILER_OPTIMIZATIONS=ON ../
+make package
+
+yum install -y python-psutil python-requests python-jsonschema
+
+yum -y install http://www.elrepo.org/elrepo-release-7.0-5.el7.elrepo.noarch.rpm
+yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+yum -y install postgresql-contrib postgresql-libs postgresql-odbc
+yum install -y postgresql10-server
+/usr/pgsql-10/bin/postgresql-10-setup initdb
+systemctl enable postgresql-10
+systemctl start postgresql-10
+
+sudo rpm -ivh irods-runtime-4.2.11-1.x86_64.rpm
+sudo rpm -ivh irods-devel-4.2.11-1.x86_64.rpm
+
+yum install -y python3
+yum install -y python3-setuptools python3-psutil
+yum -y install ninja-build
+ 
+cd /home/r2soft
+git clone -b 4.2.11 --single-branch https://github.com/irods/irods_client_icommands.git
+cd irods_client_icommands
+mkdir build
+cd build
+cmake -GNinja ../
+ninja package
+
+sudo rpm -ivh irods-icommands-4.2.11-1.x86_64.rpm
+
+//resource
+cd /home/r2soft
+
+yum install -y libxml2-devel
+yum install -y libcurl4-gnutls-dev curl-devel
+git clone -b v2 --single-branch https://github.com/irods/libs3.git
+cd libs3
+make /usr install
+cd ..
+
+git clone -b 4.2.11.1 --single-branch https://github.com/irods/irods_resource_plugin_s3.git
+cd irods_resource_plugin_s3
+git submodule update --init
+mkdir build
+cd build
+cmake ../
+make package
+
+sudo rpm -ivh irods-resource-plugin-s3-4.2.11.2-1.x86_64.rpm
+sudo rpm -ivh irods-database-plugin-postgres-4.2.11-1.x86_64.rpm
+
+TEMPORARY_zone_key
+TEMPORARY_32byte_negotiation_key
+TEMPORARY__32byte_ctrl_plane_key

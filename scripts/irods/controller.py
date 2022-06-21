@@ -36,8 +36,8 @@ class IrodsController(object):
         l = logging.getLogger(__name__)
         l.debug('Calling start on IrodsController')
 
-        if upgrade_configuration.requires_upgrade(self.config):
-            upgrade_configuration.upgrade(self.config)
+        #if upgrade_configuration.requires_upgrade(self.config):
+        #    upgrade_configuration.upgrade(self.config)
 
         try:
             self.config.validate_configuration()
